@@ -1,0 +1,16 @@
+// css文件入口
+// 1.消除浏览器默认css不一致 reset css
+// 面试题: 程序的逻辑编css sass-->sass-loader-->css文件-->css-loader-->js模块-->利用webpage-->style-loader-->style标签中的dom元素
+// 2.指定界面的风格  背景色  主题色
+
+
+// 重置浏览器默认样式
+@import "./reset.scss";
+
+// 主题的css样式
+@import "./theme.scss";
+
+// 导入的scss 是有上下文的
+body{
+    background-color: $bg-color;
+}
