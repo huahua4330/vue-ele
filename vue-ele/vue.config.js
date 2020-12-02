@@ -22,7 +22,8 @@ module.exports  = {
              // 引入文件的时候不写后缀，默认加载的文件类型
             extensions: ['.js', '.json', '.vue'],
             alias: {
-                // 获取绝对路径
+				// 获取绝对路径
+				"@":path.resolve(__dirname,"./src"),
                 "@c": path.resolve(__dirname, './src/components'),
                 "@a": path.resolve(__dirname, './src/assets'),
                 "@p": path.resolve(__dirname, './public'),

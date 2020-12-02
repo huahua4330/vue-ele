@@ -1,102 +1,169 @@
 <template>
-    <div>
-        <el-row>
-            <el-button>默认按钮</el-button>
-            <el-button type="primary">主要按钮</el-button>
-            <el-button type="success">成功按钮</el-button>
-            <el-button type="info">信息按钮</el-button>
-            <el-button type="warning">警告按钮</el-button>
-            <el-button type="danger">危险按钮</el-button>
-        </el-row>
+    <div id="login">
+        <div class="login-warp">
+            <ul class="menu-tab">
+                <li :class='{"current":item.current}' v-for="(item,index) in menuTab" :key="index" @click="toggleMenu(item)">{{item.txt}}</li>
+            </ul>
 
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
+            <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" class="login-form" size="medium">
+                <el-form-item  prop="username" class="form-item">
+                    <label for="username">邮箱</label>
+                    <el-input id="username" type="password" v-model="ruleForm.username" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item  prop="password" class="form-item">
+                    <label for="password">密码</label>
+                    <el-input id="password" type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
+                </el-form-item>
 
-        <div class="con">
-            <el-form ref="form" :model="form" label-width="80px" max-width="900px">
-                <el-form-item label="活动名称">
-                    <el-input v-model="form.name"></el-input>
+
+                <el-form-item  prop="code" class="form-item">
+                    <label for="code">验证码</label>
+                        <el-row :gutter="10">
+                            <el-col :span="15">
+                                <el-input id="code" v-model.number="ruleForm.code"></el-input>
+                            </el-col>
+                            <el-col :span="9">
+                                <el-button type="success" class="block">获取验证码</el-button>
+                            </el-col>
+                        </el-row>
                 </el-form-item>
-                <el-form-item label="活动区域">
-                    <el-select v-model="form.region" placeholder="请选择活动区域">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="活动时间">
-                    <el-col :span="11">
-                    <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
-                    </el-col>
-                    <el-col class="line" :span="2">-</el-col>
-                    <el-col :span="11">
-                    <el-time-picker placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>
-                    </el-col>
-                </el-form-item>
-                <el-form-item label="即时配送">
-                    <el-switch v-model="form.delivery"></el-switch>
-                </el-form-item>
-                <el-form-item label="活动性质">
-                    <el-checkbox-group v-model="form.type">
-                    <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-                    <el-checkbox label="地推活动" name="type"></el-checkbox>
-                    <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-                    <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
-                    </el-checkbox-group>
-                </el-form-item>
-                <el-form-item label="特殊资源">
-                    <el-radio-group v-model="form.resource">
-                    <el-radio label="线上品牌商赞助"></el-radio>
-                    <el-radio label="线下场地免费"></el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item label="活动形式">
-                    <el-input type="textarea" v-model="form.desc"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="onSubmit">立即创建</el-button>
-                    <el-button>取消</el-button>
+
+                <el-form-item class="form-item">
+                    <el-button class="block top" type="danger" @click="submitForm('ruleForm')">登录</el-button>
                 </el-form-item>
             </el-form>
+
         </div>
-
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-
-        
-
     </div>
 </template>
 <script>
+import {validate_inputValue} from "@/utils/validate.js"
 export default {
-    data() {
-        return {
-            form: {
-                name: '',
-                region: '',
-                date1: '',
-                date2: '',
-                delivery: false,
-                type: [],
-                resource: '',
-                desc: ''
+    data(){
+        // 验证验证码
+        var validateCode = (rule, value, callback) => {
+            // console.log(validate_inputValue(value));
+            this.ruleForm.code=value=validate_inputValue(value)
+            let reg = /^[a-z0-9]{6}$/
+            if (!value) {
+                return callback(new Error('验证码不能为空'));
+            }else if(!reg.test(value)){
+                callback(new Error('验证码格式错误'));
+            }else{
+                callback()
             }
-        }
+        
+        };
+        // 验证邮箱
+        var validateUsername = (rule, value, callback) => {
+            var reg =/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i
+            if (value === '') {
+                callback(new Error('请输入邮箱'));
+            } else if (!reg.test(value)) {
+                callback(new Error('邮箱格式错误'));
+            }else{
+                callback();
+            }
+        };
+        // 验证密码
+        var validatePassword = (rule, value, callback) => {
+            // 验证的字段  输入的值  验证后做什么 (回调函数)
+            let reg = /^(?!\D+$)(?![^a-zA-Z]+$)\S{6,20}$/
+            if (value === '') {
+                callback(new Error('请输入密码'));
+            } else if (!reg.test(value)) {
+                callback(new Error('密码格式6~20位'));
+            } else {
+                // 正确
+                callback();
+            }
+        };
+        return{
+            menuTab:[
+                {txt:"登录" ,current:false},
+                {txt:"注册" ,current:true}
+            ],
+            // input双向绑定数据
+            ruleForm: {
+                username: '',
+                password: '',
+                code: ''
+            },
+            // 校验方式
+            rules: {
+                username: [
+                    { validator: validateUsername, trigger: 'blur' }
+                ],
+                password: [
+                    { validator: validatePassword, trigger: 'blur' }
+                ],
+                code: [
+                    { validator: validateCode, trigger: 'blur' }
+                ]
+            }
+        };
     },
-    methods: {
-        onSubmit() {
-            console.log('submit!');
-        }
+    methods:{
+        toggleMenu(item){
+            // console.log(item )
+            // item.current=!item.current
+            this.menuTab.map(item=>item.current=false)
+            item.current=true
+        },
+        submitForm(formName) {
+            // 对表单的每一个字段进行验证
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    alert('submit!');
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
     }
 }
 </script>
-<style>
-    .con{
-        width:900px;
+<style lang="scss">
+    #login{
+        display: flex;
+        height: 100vh;/*100vh 基于浏览器的可视区域处理的*/
+        background: #344a5f;
+    }
+    .login-warp{
+        width: 330px;
+        margin: 0 auto;
+    }
+    .menu-tab{
+        text-align: center;
+        li{
+            display: inline-block;
+            width: 88px;
+            height: 36px;
+            line-height: 36px;
+            color: white;
+            border-radius: 5px;
+        }
+        .current{
+            background: rgba(0,0,0,.1);
+        }
+    }
+    .login-form{
+        label{
+            display: block;
+            color:white ;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+        .form-item{
+            margin-bottom: 13px;
+        }
+        .top{
+            margin-top:25px ;
+        }
+        .block{
+            display: block;
+            width: 100%;
+        }
     }
 </style>
