@@ -27,12 +27,15 @@
                                 <el-input id="code" v-model="ruleForm.code"></el-input>
                             </el-col>
                             <el-col :span="9">
-                                <el-button type="success" class="block" @click="getCode">获取验证码</el-button>
+                                <el-button type="success" class="block">获取验证码</el-button>
                             </el-col>
                         </el-row>
                 </el-form-item>
 
                 <el-form-item class="form-item">
+                    <!-- <p>{{num}}</p> -->
+                    <!-- <p>{{obj.name}}</p> -->
+                    <!-- <p @click="test">调用</p> -->
                     <el-button class="block top" type="danger" @click="submitForm('ruleForm')">{{this.mode=='login' ? '登陆' : '注册'}}</el-button>
                 </el-form-item>
             </el-form>
@@ -43,15 +46,56 @@
 <script>
 import validateUtils from "@/utils/validate.js"
 import {onMounted,reactive,ref} from "@vue/composition-api"
-import {get_code} from "@/api/login.js" 
 export default {
-    setup(prop,{refs,root}) {
-// ---------------------------- 生命周期 --------------------------------------
+    setup(prop,{refs}) {
         
-// ----------------------------- data -----------------------------------------
+        // 3.0----等价------>2.0
+        // context.attrs//this.$attrs 包含了父组件给子组件传递到属性（除了prop之外的其他属性，也除了class style 等属性）
+        // context.slots//this.$slots 访问当前组件中的插槽
+        // context.parent//this.$parent 代表父组件的实例化对象 this.$parent, 调用父组件的方法和属性
+        // context.root//this.$root 根组件
+        // context.emit//this.$emit 子组件向父组件触发一个自定义方法，目的是为了传递参数，这是实现2.0父子组件传值的基本方式
+        // context.refs//this.$refs 在组件中获取dom元素的引用 返回时一个对象。ref在dom的js对象，ref在子组件上，返回的是子组件的实例化对象 this.$refs.xx 调用了子组件的数据和方法 自己测试!!!
+    // 1.数据的定义和使用
+        // 引用类型数据 object array
+        const obj=reactive({name:"Justin",age:21})
+        console.log(obj.name)
+        // 基本类型数据 string number null undefined boolean 返回的是响应式对象
+        const num =ref(100) 
+        // const flag =ref(true) 
+        // flag.value=false
+        // console.log(flag)
+        // console.log(flag.vlaue)
+
+        // 获取.value 触发get方式  
+        // num.value 
+        // 设置.value='新值' 触发set方法 -->通知视图更新
+        // num.value=1000
+
+
+    // 2.setup定义数据 生命周期钩子 自定义方法
+        // 1.定义的数据必须return 如果不return 不能再模板中使用
+        // 2.定义生命周期
+        
+        onMounted(()=>{//回调函数
+            // console.log('Lay')
+        })
+        // 3.定义自定义方法 如果在模板中使用这个函数，必须return
+        const test=(()=>{
+            // console.log("这是一个测试方法")
+            test()
+        })
+
+        return {
+            obj,
+            num,
+            test
+        }
+    },
+    data(){
         // 验证邮箱
-        let validateUsername = (rule, value, callback) => {
-            ruleForm.username=value=validateUtils.validate_inputValue(value,'email')
+        var validateUsername = (rule, value, callback) => {
+            this.ruleForm.username=value=validateUtils.validate_inputValue(value,'email')
             if (value === '') {
                 callback(new Error('请输入邮箱'));
             } else if (validateUtils.test_email(value)) {
@@ -61,9 +105,9 @@ export default {
             }
         };
         // 验证密码
-        let validatePassword = (rule, value, callback) => {
+        var validatePassword = (rule, value, callback) => {
             // 验证的字段  输入的值  验证后做什么 (回调函数)
-            ruleForm.password=value=validateUtils.validate_inputValue(value,'password')
+            this.ruleForm.password=value=validateUtils.validate_inputValue(value,'password')
             if (value === '') {
                 callback(new Error('请输入密码'));
             } else if (validateUtils.test_password(value)) {
@@ -74,24 +118,24 @@ export default {
             }
         };
         // 验证重复密码
-        let validatePassword1 = (rule, value, callback) => {
-            if(mode.value == 'login') {
+        var validatePassword1 = (rule, value, callback) => {
+            if(this.mode == 'login') {
                 callback();
                 return
             }
             // 验证的字段  输入的值  验证后做什么 (回调函数)
-            ruleForm.password1=value=validateUtils.validate_inputValue(value,'password1')
-            if(value!==ruleForm.password){
+            this.ruleForm.password1=value=validateUtils.validate_inputValue(value,'password1')
+            if(value!==this.ruleForm.password){
                 callback(new Error('两次密码不一致'));
             }else{
                 callback();
             }
         };
         // 验证验证码
-        let validateCode = (rule, value, callback) => {
+        var validateCode = (rule, value, callback) => {
             // console.log(validate_inputValue(value));
             // 过滤非法字符
-            ruleForm.code=value=validateUtils.validate_inputValue(value,'code')
+            this.ruleForm.code=value=validateUtils.validate_inputValue(value,'code')
             // 验证码有六位
             if (!value) {
                 return callback(new Error('验证码不能为空'));
@@ -101,41 +145,48 @@ export default {
                 callback()
             }
         };
-
-        // 定义tab切换模式
-        const mode=ref("login")
-        // 定义表单相关数据
-        const  menuTab= reactive([
-            {txt:"登录" ,current:true,type:'login'},
-            {txt:"注册" ,current:false,type:'register'}
-        ])
-        // input双向绑定数据
-        const ruleForm= reactive({
-            username: '',
-            password: '',
-            password1:'',
-            code: ''
-        })
-        // 校验方式
-        const rules=reactive({
-            username: [
-                { validator: validateUsername, trigger: 'blur' }
+        return{
+            mode:'login',
+            menuTab:[
+                {txt:"登录" ,current:true,type:'login'},
+                {txt:"注册" ,current:false,type:'register'}
             ],
-            password: [
-                { validator: validatePassword, trigger: 'blur' }
-            ],
-            password1: [
-                { validator: validatePassword1, trigger: 'blur' }
-            ],
-            code: [
-                { validator: validateCode, trigger: 'blur' }
-            ]
-        })
-// ----------------------------- methods -----------------------------------------
+            // input双向绑定数据
+            ruleForm: {
+                username: '',
+                password: '',
+                password1:'',
+                code: ''
+            },
+            // 校验方式
+            rules: {
+                username: [
+                    { validator: validateUsername, trigger: 'blur' }
+                ],
+                password: [
+                    { validator: validatePassword, trigger: 'blur' }
+                ],
+                password1: [
+                    { validator: validatePassword1, trigger: 'blur' }
+                ],
+                code: [
+                    { validator: validateCode, trigger: 'blur' }
+                ]
+            }
+        };
+    },
+    methods:{
         
-        const submitForm=(formName=> {
+        toggleMenu(item){
+            // console.log(item )
+            // item.current=!item.current
+            this.menuTab.map(item=>item.current=false)
+            item.current=true
+            this.mode=item.type
+        },
+        submitForm(formName) {
             // 对表单的每一个字段进行验证
-            refs[formName].validate((valid) => {
+            this.$refs[formName].validate((valid) => {
                 if (valid) {
                     alert('submit! OK!!!');
                 } else {
@@ -143,46 +194,7 @@ export default {
                     return false;
                 }
             });
-        })
-        const toggleMenu=((item)=>{
-            menuTab.map(item=>item.current=false)
-            item.current=true
-            mode.value=item.type
-            // 点击切换的时候清空表单数据
-            refs['ruleForm'].resetFields()
-        })
-
-        // 获取验证码
-        const getCode=(()=>{
-            // 判断如果邮箱不存在
-            if(ruleForm.username==''){
-                root.$message.error('邮箱不能为空')
-                return false
-            }
-            const data={
-                username:ruleForm.username,
-                // module:"login",
-                module:"mode.value"
-            }
-            get_code(data).then((res)=>{
-                // console.log(1)
-                // console.log(res)
-                // console.log(res.data.message)
-                root.$message.success(res.data.message)
-            }).catch((err)=>{
-                console.log(2)
-            })
-        })
-        
-        return {
-            mode,
-            menuTab,
-            ruleForm,
-            rules,
-            submitForm,
-            toggleMenu,
-            getCode
-        }
+        },
     }
 }
 </script>

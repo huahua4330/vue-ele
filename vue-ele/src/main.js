@@ -4,12 +4,29 @@ import router from "./router";
 import store from "./store";
 
 // 导入css入口配置
-import "./styles/main.scss"
+// 可以删除
+// import "./styles/main.scss"
 
 // 导入element-ui
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+
+// 导入VueCompositionApi
+import VueCompositionApi from '@vue/composition-api'; 
+Vue.use(VueCompositionApi);
+
 Vue.use(ElementUI);
+
+// 系统默认的环境变量
+// console.log(process.env.NODE_ENV)//development  线下
+// 自定义环境变量
+// 如果是线下 npm run serve
+      // 默认读取 .env.development
+// 如果是线上 npm run build
+      // 默认读取 .env.production
+
+console.log(process.env)
+
 
 Vue.config.productionTip = false;
 

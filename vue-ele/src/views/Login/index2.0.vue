@@ -27,7 +27,7 @@
                                 <el-input id="code" v-model="ruleForm.code"></el-input>
                             </el-col>
                             <el-col :span="9">
-                                <el-button type="success" class="block" @click="getCode">获取验证码</el-button>
+                                <el-button type="success" class="block">获取验证码</el-button>
                             </el-col>
                         </el-row>
                 </el-form-item>
@@ -42,16 +42,12 @@
 </template>
 <script>
 import validateUtils from "@/utils/validate.js"
-import {onMounted,reactive,ref} from "@vue/composition-api"
-import {get_code} from "@/api/login.js" 
+
 export default {
-    setup(prop,{refs,root}) {
-// ---------------------------- 生命周期 --------------------------------------
-        
-// ----------------------------- data -----------------------------------------
+    data(){
         // 验证邮箱
-        let validateUsername = (rule, value, callback) => {
-            ruleForm.username=value=validateUtils.validate_inputValue(value,'email')
+        var validateUsername = (rule, value, callback) => {
+            this.ruleForm.username=value=validateUtils.validate_inputValue(value,'email')
             if (value === '') {
                 callback(new Error('请输入邮箱'));
             } else if (validateUtils.test_email(value)) {
@@ -61,9 +57,9 @@ export default {
             }
         };
         // 验证密码
-        let validatePassword = (rule, value, callback) => {
+        var validatePassword = (rule, value, callback) => {
             // 验证的字段  输入的值  验证后做什么 (回调函数)
-            ruleForm.password=value=validateUtils.validate_inputValue(value,'password')
+            this.ruleForm.password=value=validateUtils.validate_inputValue(value,'password')
             if (value === '') {
                 callback(new Error('请输入密码'));
             } else if (validateUtils.test_password(value)) {
@@ -74,24 +70,24 @@ export default {
             }
         };
         // 验证重复密码
-        let validatePassword1 = (rule, value, callback) => {
-            if(mode.value == 'login') {
+        var validatePassword1 = (rule, value, callback) => {
+            if(this.mode == 'login') {
                 callback();
                 return
             }
             // 验证的字段  输入的值  验证后做什么 (回调函数)
-            ruleForm.password1=value=validateUtils.validate_inputValue(value,'password1')
-            if(value!==ruleForm.password){
+            this.ruleForm.password1=value=validateUtils.validate_inputValue(value,'password1')
+            if(value!==this.ruleForm.password){
                 callback(new Error('两次密码不一致'));
             }else{
                 callback();
             }
         };
         // 验证验证码
-        let validateCode = (rule, value, callback) => {
+        var validateCode = (rule, value, callback) => {
             // console.log(validate_inputValue(value));
             // 过滤非法字符
-            ruleForm.code=value=validateUtils.validate_inputValue(value,'code')
+            this.ruleForm.code=value=validateUtils.validate_inputValue(value,'code')
             // 验证码有六位
             if (!value) {
                 return callback(new Error('验证码不能为空'));
@@ -101,41 +97,47 @@ export default {
                 callback()
             }
         };
-
-        // 定义tab切换模式
-        const mode=ref("login")
-        // 定义表单相关数据
-        const  menuTab= reactive([
-            {txt:"登录" ,current:true,type:'login'},
-            {txt:"注册" ,current:false,type:'register'}
-        ])
-        // input双向绑定数据
-        const ruleForm= reactive({
-            username: '',
-            password: '',
-            password1:'',
-            code: ''
-        })
-        // 校验方式
-        const rules=reactive({
-            username: [
-                { validator: validateUsername, trigger: 'blur' }
+        return{
+            mode:'login',
+            menuTab:[
+                {txt:"登录" ,current:true,type:'login'},
+                {txt:"注册" ,current:false,type:'register'}
             ],
-            password: [
-                { validator: validatePassword, trigger: 'blur' }
-            ],
-            password1: [
-                { validator: validatePassword1, trigger: 'blur' }
-            ],
-            code: [
-                { validator: validateCode, trigger: 'blur' }
-            ]
-        })
-// ----------------------------- methods -----------------------------------------
-        
-        const submitForm=(formName=> {
+            // input双向绑定数据
+            ruleForm: {
+                username: '',
+                password: '',
+                password1:'',
+                code: ''
+            },
+            // 校验方式
+            rules: {
+                username: [
+                    { validator: validateUsername, trigger: 'blur' }
+                ],
+                password: [
+                    { validator: validatePassword, trigger: 'blur' }
+                ],
+                password1: [
+                    { validator: validatePassword1, trigger: 'blur' }
+                ],
+                code: [
+                    { validator: validateCode, trigger: 'blur' }
+                ]
+            }
+        };
+    },
+    methods:{
+        toggleMenu(item){
+            // console.log(item )
+            // item.current=!item.current
+            this.menuTab.map(item=>item.current=false)
+            item.current=true
+            this.mode=item.type
+        },
+        submitForm(formName) {
             // 对表单的每一个字段进行验证
-            refs[formName].validate((valid) => {
+            this.$refs[formName].validate((valid) => {
                 if (valid) {
                     alert('submit! OK!!!');
                 } else {
@@ -143,46 +145,7 @@ export default {
                     return false;
                 }
             });
-        })
-        const toggleMenu=((item)=>{
-            menuTab.map(item=>item.current=false)
-            item.current=true
-            mode.value=item.type
-            // 点击切换的时候清空表单数据
-            refs['ruleForm'].resetFields()
-        })
-
-        // 获取验证码
-        const getCode=(()=>{
-            // 判断如果邮箱不存在
-            if(ruleForm.username==''){
-                root.$message.error('邮箱不能为空')
-                return false
-            }
-            const data={
-                username:ruleForm.username,
-                // module:"login",
-                module:"mode.value"
-            }
-            get_code(data).then((res)=>{
-                // console.log(1)
-                // console.log(res)
-                // console.log(res.data.message)
-                root.$message.success(res.data.message)
-            }).catch((err)=>{
-                console.log(2)
-            })
-        })
-        
-        return {
-            mode,
-            menuTab,
-            ruleForm,
-            rules,
-            submitForm,
-            toggleMenu,
-            getCode
-        }
+        },
     }
 }
 </script>
