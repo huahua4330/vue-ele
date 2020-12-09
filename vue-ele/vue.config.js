@@ -44,9 +44,11 @@ module.exports  = {
 		proxy:{
 			// http://localhost:8010/api/getSms/ 
 			// http://www.web-jshtml.cn/productapi/api/getSms/ 
-			// http://www.web-jshtml.cn/productapi/getSms/ 
+			// http://www.web-jshtml.cn/productapi//getSms/ 没有token业务的接口
+			// http://www.web-jshtml.cn/productapi/token/getSms/ 有token业务的接口
+
 			"/api":{
-				target:"http://www.web-jshtml.cn/productapi/",//目标接口
+				target:"http://www.web-jshtml.cn/productapi/token/",//目标接口
 				changeOrigin: true,  //是否跨域 生成一个node服务器 localhost:8010域名下的node服务器，帮你做代理
 				// 重写url
 				pathRewrite:{
