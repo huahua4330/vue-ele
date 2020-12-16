@@ -9,5 +9,7 @@
 </template>
 
 <style lang="scss">
-
+  #nav{
+    
+  }
 </style>

@@ -1,5 +1,6 @@
 // common js规范 node js规范
 const path=require("path")
+const { config } = require("process")
 // console.log("项目的绝对路径",__dirname)
 // console.log('项目中某个路径的绝对路径' ,path.resolve(__dirname, './src/components'))
 module.exports  = {
@@ -18,6 +19,20 @@ module.exports  = {
 			}
 		}
 	},
+	// 配置解析svg的loader
+	chainWebpack:(config)=>{
+		const svgRule = config.module.rule("svg");     
+		svgRule.uses.clear();     
+		svgRule       
+	 	.use("svg-sprite-loader")       
+	 	.loader("svg-sprite-loader")       
+	  	.options({         
+	   		symbolId: "icon-[name]",         
+	    	include: ["./src/icons"]       
+	  	});
+	}, 
+	  
+
 	// 配置目录的别名
 	configureWebpack: (config) => {
         config.resolve = {

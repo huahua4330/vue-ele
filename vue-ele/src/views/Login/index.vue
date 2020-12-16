@@ -47,7 +47,11 @@ import {get_code,do_register,do_login} from "@/api/login.js"
 export default {
     setup(prop,{refs,root}) {
 // ---------------------------- 生命周期 --------------------------------------
-        
+        // onMounted(()=>{
+        //     get_code().then(res=>{
+        //         console.log(res)
+        //     })
+        // })
 // ----------------------------- data -----------------------------------------
         const status_username=ref(false)
         const status_password=ref(false)
@@ -85,6 +89,7 @@ export default {
         // 验证重复密码
         let validatePassword1 = (rule, value, callback) => {
             if(mode.value == 'login') {
+
                 callback();
                 return
             }
@@ -270,11 +275,25 @@ export default {
                 password:ruleForm.password,
                 code:ruleForm.code
             }
-            do_login(data).then(res=>{
+            root.$store.dispatch('app/login',data).then(res=>{
                 root.$message.success(res.data.message)
+                // 登陆后跳转到首页
+                root.$router.push({
+                    name:"Home"
+                })
             }).catch(err=>{
 
             })
+            // 网络请求  vuex-actions--mutations --state
+            // do_login(data).then(res=>{
+                // root.$message.success(res.data.message)
+                // // 登陆后跳转到首页
+                // root.$router.push({
+                //     name:"Home"
+                // })
+            // }).catch(err=>{
+
+            // })
         }
         // 执行注册 
         const doRegister=()=>{
@@ -296,15 +315,18 @@ export default {
         }
         // 获取验证码是验证相关字段
         const validataFileds=()=>{
+            const result=status_username.value && status_password.value
             const _filed_arr=[
                 {filed:"username",flag:status_username.value,message:"邮箱格式错误"},
                 {filed:"password",flag:status_password.value,message:"密码格式错误"},
-                {filed:"password1",flag:status_password1.value,message:"重复密码错误"},
-            ].filter(item=>!item.flag)
-            console.log(_filed_arr)
+            ]
+            if(mode.value==='register'){
+                _filed_arr.push({filed:"password1",flag:status_password1.value,message:"重复密码错误"})
+                result=status_username.value&&status_password.value&&status_password1.value
+            }
             return{
-                result:status_username.value&&status_password.value&&status_password1.value,
-                filed:_filed_arr
+                result:result,
+                filed:_filed_arr.filter(item=>!item.flag)
             }
         }
         return {

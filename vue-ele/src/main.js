@@ -2,6 +2,11 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
+// 导入全局图标组件
+import './icons/'
+// 导入路由权限限制
+import './router/permit.js'
+
 
 // 导入css入口配置
 // 可以删除
@@ -26,6 +31,7 @@ Vue.use(ElementUI);
       // 默认读取 .env.production
 
 console.log(process.env)
+
 
 
 Vue.config.productionTip = false;

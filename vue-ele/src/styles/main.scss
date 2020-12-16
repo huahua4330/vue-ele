@@ -4,13 +4,29 @@
 // 2.指定界面的风格  背景色  主题色
 
 
+// 引入全局样式配置
+@import "./config.scss";
+
+// 引入修改elementui的样式文件
+@import "./element.scss";
+
 // 重置浏览器默认样式
 @import "./reset.scss";
 
-// 主题的css样式
-@import "./theme.scss";
+// 常见的样式类
+.pull-right{float: right;}
+.pull-left{float: left;}
 
 // 导入的scss 是有上下文的
 // body{
 //     background-color: $bg-color;
 // }
+
+
+// 定义动画函数
+@mixin webkit($type,$value){
+    -webkit-#{$type}:$value ;//chrome
+    -moz-#{$type}:$value ;//firefox
+    -o-#{$type}:$value ;//opera
+    -ms-#{$type}:$value ;//ie
+}

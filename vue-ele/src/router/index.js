@@ -6,16 +6,86 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    redirect:'/home'
+    mate:{//自定义属性
+      name:'信息管理'
+    },
+    hidden:true,//隐藏
+    redirect:'/login'
   },
   {
     path: "/Home",
     name: "Home",
-    component: () =>import("../views/Home/index.vue")
+    hidden:false,//显示
+    mate:{//自定义属性
+      name:'控制台',
+      icon:'console'
+    },
+    component: () =>import("../views/Layout/index.vue"),
+    redirect:'/index',
+    children:[
+      {
+        path:'/index',
+        name:'HomeIndex',
+        mate:{name:'首页'},
+        component: () =>import("../views/Home/index.vue"),
+      }
+    ]
   },
   {
-    path: "/Login",
+    path: "/info",
+    name: "Info",
+    hidden:false,//显示
+    mate:{//自定义属性
+      name:'信息管理',
+      icon:'info' 
+    },
+    component: () =>import("../views/Layout/index.vue"),
+    children:[
+      {
+        path:'/infoIndex',
+        name:'infoIndex',
+        mate:{name:'信息列表'},
+        component: () =>import("../views/Info/index.vue"),
+      },
+      {
+        path:'/infoCate',
+        name:'infoCate',
+        mate:{name:'信息分类'},
+        component: () =>import("../views/Info/cate.vue"),
+      }
+    ]
+  },
+  {
+    path: "/user",
+    name: "User",
+    hidden:false,//显示
+    mate:{//自定义属性
+      name:'用户管理',
+      icon:'user' 
+    },
+    component: () =>import("../views/Layout/index.vue"),
+    children:[
+      {
+        path:'/userIndex',
+        name:'userIndex',
+        mate:{name:'用户管理'},
+        component: () =>import("../views/User/index.vue"),
+      },
+      {
+        path:'/userCate',
+        name:'userCate',
+        mate:{name:'用户分类'},
+        component: () =>import("../views/User/cate.vue"),
+      }
+    ]
+  },
+  {
+    path: "/login",
     name: "Login",
+    hidden:true,//隐藏
+    mate:{//自定义属性
+      name:'登陆'
+    },
     component: () =>import("../views/Login/index.vue")
   },
 ];
@@ -26,18 +96,6 @@ const router = new VueRouter({
   routes
 });
 
-// 路由守卫  登陆了才能跳转
-router.beforeEach((to,from,next)=>{
-  // console.log(to)//从哪里来的
-  // console.log(from)//到哪里去
-  // console.log(next)
-  const isLogin=localStorage.getItem("ele_login") ? true : false
-  if(to.path==='/login'){
-    next()
-  }else{
-    // 是否登陆 没有登陆重定向到登陆页面 如果登陆了就正常next
-    isLogin ? next() : next('/login')
-  }
-})
+
 
 export default router;
