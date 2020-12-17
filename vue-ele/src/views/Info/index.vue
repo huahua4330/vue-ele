@@ -91,14 +91,13 @@
         </el-row>
         
         <!-- 新增弹框 -->
-        <el-dialog title="收货地址" :visible.sync="info_dailog" append-to-body>
-            ...
-        </el-dialog>
+        <newInfo :info_dailog.sync='info_dailog'/>
 
     </div>
 </template>
 <script>
 import {computed, reactive, ref} from '@vue/composition-api'
+import newInfo from './dialog/info'
 export default {
     components:{newInfo},
     setup(){
@@ -158,7 +157,7 @@ export default {
             // reactive
             search_option,table_Data,
             // methods
-            search_keyword,current_change
+            search_keyword,current_change,
         }
     }
 }
