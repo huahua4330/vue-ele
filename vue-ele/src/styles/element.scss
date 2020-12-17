@@ -26,13 +26,6 @@
   }
 }
 
-
-
-
-
-
-
-
 // 收缩状态下修改二级菜单样式
 .el-menu--vertical{
   margin-left: -4px;
@@ -49,6 +42,24 @@
     background-color: $Menu_1 !important;
   }
 }
-
-
-
+// 移出侧边nav的竖线
+.el-menu{
+  border-right: none;
+}
+// 所有的label样式
+label,.el-input__inner{//并列的要用逗号链接起来
+  color: #344860;
+}
+// 修改table表格样式
+div.el-table{
+  th,td{
+    text-align: center;
+    color: #344860;
+  }
+  th{
+    font-weight: bold;
+  }
+  td{
+    font-size: 14px;
+  }
+}

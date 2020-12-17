@@ -16,6 +16,8 @@
 // 常见的样式类
 .pull-right{float: right;}
 .pull-left{float: left;}
+.space-30{margin-top: 30px;}
+
 
 // 导入的scss 是有上下文的
 // body{
@@ -29,4 +31,17 @@
     -moz-#{$type}:$value ;//firefox
     -o-#{$type}:$value ;//opera
     -ms-#{$type}:$value ;//ie
+}
+// 定义label和表单元素之间的位置
+@mixin  labelDom($align,$width,$line-height,$font-size:14) {
+    label{
+        float: left;
+        width: $width + px;
+        text-align: $align;
+        line-height: $line-height + px;
+        font-size: $font-size + px;
+    }
+    .warp-content{
+        margin-left: $width + px;
+    }
 }

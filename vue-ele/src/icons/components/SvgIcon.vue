@@ -19,7 +19,7 @@ export default {
 
     },
     setup(props,{root,refs}){
-        console.log("--->",props.iconName)
+        // console.log("--->",props.iconName)
         // 计算属性
 
         const svgClass=computed(()=>{

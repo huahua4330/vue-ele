@@ -44,7 +44,7 @@ export default {
         height: $LayHeader;
         background: white; 
         .header-icon{
-            padding: 22px 30px;
+            padding: 12px 30px;
             svg{
                 font-size: 25px;
             }
@@ -55,10 +55,9 @@ export default {
         padding: 0 32px;
         border-right:1px solid #ccc ;
         img{
-            width: 35px;
-            height: 35px;
-            margin-top: 20px;
-            margin-right: 20px;
+            width: 30px;
+            height: 30px;
+            margin-top: 10px;
             display: inline-block;
             border-radius: 50%;
         }

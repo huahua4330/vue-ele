@@ -5,7 +5,7 @@ import store from "./store";
 // 导入全局图标组件
 import './icons/'
 // 导入路由权限限制
-import './router/permit.js'
+// import './router/permit.js'
 
 
 // 导入css入口配置

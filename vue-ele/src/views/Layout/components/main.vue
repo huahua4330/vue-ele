@@ -16,7 +16,9 @@ export default {
         top: $LayHeader;
         right: 0;
         bottom: 0;
-        border: 30px solid #f7f7f7;
+        padding-right:10px;
+        padding-left:10px;
+        border:20px solid #f7f7f7;
         border-bottom: none; 
         @include webkit ('transition',all .3s ease 0s) 
     }
