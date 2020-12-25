@@ -63,3 +63,19 @@ div.el-table{
     font-size: 14px;
   }
 }
+// 调整dailog的内边距
+.el-dialog__body{
+  padding: 30px 50px 30px !important;
+  .el-form-item:last-child{
+    margin-bottom: 0 !important;
+  }
+}
+// 调整模态框按钮位置
+.el-dialog__footer{
+  text-align: center;
+  padding-bottom: 45px !important;
+  button{
+    width: 140px !important;
+    margin: 0 15px !important;
+  }
+}

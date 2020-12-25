@@ -168,7 +168,6 @@ export default {
                     // 执行登陆注册
                     mode.value=='login' ? doLogin() :doRegister()
                 } else {
-                    
                     return false;
                 }
             });
