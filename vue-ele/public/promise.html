@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>promise</h1>
+</body>
+<script>
+    // Es6
+
+    // let promise=new Promise((resolve,reject)=>{
+    //     // 业务流程--> ajax
+    //     // resolve(111)
+    // })
+
+    // promise.then(res=>{
+    //     console.log(res)
+    // }).catch(err=>{
+    //     console.log(err)
+    // })
+    // 链式调用
+    const fun1=(flag)=>{
+        return new Promise((resolve,reject)=>{
+            if (flag) {
+                console.log("第一个promise成功")
+                resolve("第一个成功数据")
+            } else {
+                console.log("第一个promise失败")
+                resolve("第一个失败数据")
+            }
+        })
+    }
+
+    const fun2=(flag)=>{
+        return new Promise((resolve,reject)=>{
+            if (flag) {
+                console.log("第二个promise成功")
+                resolve("第二个成功数据")
+            } else {
+                console.log("第二个promise失败")
+                resolve("第二个失败数据")
+            }
+        })
+    }
+
+    const fun3=(flag)=>{
+        return new Promise((resolve,reject)=>{
+            if (flag) {
+                console.log("第三个promise成功")
+                resolve("第三个成功数据")
+            } else {
+                console.log("第三个promise失败")
+                resolve("第三个失败数据")
+            }
+        })
+    }
+
+    const fun4=(flag)=>{
+        return new Promise((resolve,reject)=>{
+            if (flag) {
+                console.log("第四个promise成功")
+                resolve("第四个成功数据")
+            } else {
+                console.log("第四个promise失败")
+                resolve("第四个失败数据")
+            }
+        })
+    }
+
+    // fun1(true).then(res=>{
+    //     console.log(res)
+    //     return fun2(true)//这里没有返回fun2的数据是因为没有return  res必须把值return出去才能有值
+    // }).then(res=>{
+    //     console.log(res)
+    //     return fun3(true)
+    // }).then(res=>{
+    //     console.log(res)
+    // })
+    // .catch(err=>{
+    //     console.log(Justin)
+    //     console.log(err)
+    // })
+
+    // all :多个promise执行 必须全部成功才能执行then 只要有一个失败就是catch
+    // Promise.all([fun1(true),fun2(false),fun3(true)]).then(res=>{
+    //     console.log("xxx")
+    // }).catch(err=>{
+    //     console.log('ooo')
+    // })
+    
+    // race: (竞赛)  哪个先执行完毕，就放弃其他的 只要有一个成功就执行then
+    Promise.race([fun1(false),fun2(true),fun3(false)]).then(res=>{
+        console.log("111")
+    }).catch(err=>{
+        console.log('222')
+    })
+</script>
+</html>
